@@ -3,7 +3,15 @@ import React, { useState } from "react";
 import { FaEyeSlash, FaEye } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
-
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { db } from "../firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -12,12 +20,39 @@ export default function Signup() {
     password: "",
   });
   const { name, email, password } = formData;
+  const navigate = useNavigate();
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
   }
+  async function onsubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      const user = userCredential.user;
+      console.log(user);
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      navigate("/");
+      toast.success("Sign-up was  successful");
+    } catch (error) {
+      toast.error("Something went wrong with the registration");
+    }
+  }
+
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Sign Up</h1>
@@ -30,7 +65,7 @@ export default function Signup() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form>
+          <form onSubmit={onsubmit}>
             <input
               className=" mb-6 w-full px-4 py-2 text-xl text-gray-600 bg-white border-gray-300 rounded transition ease-out"
               type="text"
