@@ -31,8 +31,9 @@ export default function Signin() {
       if (userCredential.user) {
         navigate("/");
       }
+      toast.success("login successful");
     } catch (error) {
-      console.log("Bad user credentials");
+      toast.error("Bad user credentials");
     }
   }
   return (
