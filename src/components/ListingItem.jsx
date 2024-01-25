@@ -2,8 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import { MdOutlineMyLocation } from "react-icons/md";
+import { AiFillEdit } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 
-export default function ListingItem({ listing, id }) {
+export default function ListingItem({ listing, id, onDelete, onEdit }) {
   return (
     <li className="relative bg-purple-50 flex flex-col justify-between items-center shadow-md hover:shadow-xl rounded-md over-flow-hidden transition-shadow duration-150 m-[10px]">
       <Link className="contents" to={`/category/${listing.type}/${id}`}>
@@ -56,6 +58,18 @@ export default function ListingItem({ listing, id }) {
           </div>
         </div>
       </Link>
+      {onEdit && (
+        <AiFillEdit
+          className="absolute bottom-2 right-10 h-8 w-8 cursor-pointer text-black"
+          onClick={() => onEdit(listing.id)}
+        />
+      )}
+      {onDelete && (
+        <AiFillDelete
+          className="absolute bottom-2 right-2 h-8 w-8 cursor-pointer text-red-500 "
+          onClick={() => onDelete(listing.id)}
+        />
+      )}
     </li>
   );
 }
