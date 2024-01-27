@@ -4,7 +4,13 @@ import { useParams } from "react-router-dom";
 import { db } from "../firebase";
 import Spinner from "../components/Spinner";
 import { RiShareBoxFill } from "react-icons/ri";
+import { FaBath } from "react-icons/fa";
+import { FaBed } from "react-icons/fa";
+import { FaParking } from "react-icons/fa";
+import { MdChair } from "react-icons/md";
+import { MdMyLocation } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
+
 import SwiperCore, {
   EffectFade,
   Autoplay,
@@ -45,7 +51,7 @@ export default function Listing() {
         {listing.imgUrls.map((url, index) => (
           <SwiperSlide key={index}>
             <div
-              className="relative w-full overflow-hidden h-[300px]"
+              className="relative w-full overflow-hidden h-[500px]"
               style={{
                 background: `url(${listing.imgUrls[index]}) center no-repeat`,
                 backgroundSize: "cover",
@@ -71,6 +77,58 @@ export default function Listing() {
           LINK COPIED
         </p>
       )}
+      <div className="flex flex-col md:flex-row max-6xl lg:mx-auto p-4 rounded lg border-3 shadow-lg bg-white lg:space-x-5 ">
+        <div className="bg-purple-100 w-full h-[220px] lg-[400px] p-2">
+          <p className="text-2xl font-bold mb-3 text-purple-950">
+            {listing.name} - $
+            {listing.offer
+              ? listing.discountedPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              : listing.regularPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            {listing.type === "rent" ? " /month" : ""}
+          </p>
+          <p className="flex items-center mt-3 mb-3 font-semibold ">
+            <MdMyLocation className="text-green-800 mr-1" />
+            {listing.address}
+          </p>
+          <div className="flex justify-start items-center space-x-4 w-[75%]">
+            <p className="bg-red-700 w-full max-[200px] rounded-md text-white p-1 font-semibold shadow-md text-center ">
+              {listing.type === "rent" ? "RENT" : "SALE"}
+            </p>
+            {listing.offer && (
+              <p className="bg-green-700 w-full max-[200px] rounded-md text-white p-1 font-semibold shadow-md text-center">
+                ${+listing.regularPrice - +listing.discountedPrice}discount
+              </p>
+            )}
+          </div>
+          <p className="mt-3 mb-3">
+            <span className=" font-semibold">Description - </span>
+            {listing.description}
+          </p>
+          <ul className="flex items-center space-x-2 sm:space-x-10 text-sm font-semibold">
+            <li className="uppercase flex items-center whitespace-nowrap">
+              <FaBed className="text-lg mr-1" />
+              {+listing.bedrooms > 1 ? `${listing.bedrooms} Beds` : "1 Bed"}
+            </li>
+            <li className="uppercase  flex items-center whitespace-nowrap">
+              <FaBath className="text-lg mr-1" />
+              {+listing.bathrooms > 1 ? `${listing.bathrooms} Baths` : "1 Bath"}
+            </li>
+            <li className="uppercase flex items-center whitespace-nowrap">
+              <FaParking className="text-lg mr-1" />
+              {listing.parking ? "Parking-Spot" : "No-Parking"}
+            </li>
+            <li className="uppercase flex items-center whitespace-nowrap">
+              <MdChair className="text-lg mr-1" />
+              {listing.furnished ? "Furnished" : "not-furnished"}
+            </li>
+          </ul>
+        </div>
+        <div className="bg-blue-300  w-full h-[220px] lg-[400px] z-10 overflow-x-hidden"></div>
+      </div>
     </main>
   );
 }
