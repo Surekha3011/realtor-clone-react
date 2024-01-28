@@ -18,11 +18,15 @@ import SwiperCore, {
   Pagination,
 } from "swiper";
 import "swiper/css/bundle";
+import { getAuth } from "firebase/auth";
+import Contact from "../components/Contact";
 export default function Listing() {
   const params = useParams();
+  const auth = getAuth();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
+  const [contactLandlord, setContactLandlord] = useState(false);
   SwiperCore.use([Autoplay, Navigation, Pagination]);
   useEffect(() => {
     async function fetchListing() {
@@ -78,7 +82,7 @@ export default function Listing() {
         </p>
       )}
       <div className="flex flex-col md:flex-row max-6xl lg:mx-auto p-4 rounded lg border-3 shadow-lg bg-white lg:space-x-5 ">
-        <div className="bg-purple-100 w-full h-[220px] lg-[400px] p-2">
+        <div className="bg-purple-100 w-full p-2">
           <p className="text-2xl font-bold mb-3 text-purple-950">
             {listing.name} - $
             {listing.offer
@@ -126,8 +130,23 @@ export default function Listing() {
               {listing.furnished ? "Furnished" : "not-furnished"}
             </li>
           </ul>
+          {listing.userRef !== auth.currentUser?.uid && !contactLandlord && (
+            <div className="mt-6">
+              <button
+                onClick={() => {
+                  setContactLandlord(true);
+                }}
+                className="px-6 py-2 mt-6 bg-purple-500 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-purple-600 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg w-full text-center transition duration-150 ease-in-out"
+              >
+                Contact LandLord
+              </button>
+            </div>
+          )}
+          {contactLandlord && (
+            <Contact userRef={listing.userRef} listing={listing}></Contact>
+          )}
         </div>
-        <div className="bg-blue-300  w-full h-[220px] lg-[400px] z-10 overflow-x-hidden"></div>
+        <div className="bg-blue-300  w-full z-10 overflow-x-hidden"></div>
       </div>
     </main>
   );
