@@ -10,7 +10,7 @@ import { FaParking } from "react-icons/fa";
 import { MdChair } from "react-icons/md";
 import { MdMyLocation } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import SwiperCore, {
   EffectFade,
   Autoplay,
@@ -27,6 +27,7 @@ export default function Listing() {
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const [contactLandlord, setContactLandlord] = useState(false);
+  const position = [51.505, -0.09];
   SwiperCore.use([Autoplay, Navigation, Pagination]);
   useEffect(() => {
     async function fetchListing() {
@@ -55,7 +56,7 @@ export default function Listing() {
         {listing.imgUrls.map((url, index) => (
           <SwiperSlide key={index}>
             <div
-              className="relative w-full overflow-hidden h-[500px]"
+              className="relative w-full overflow-hidden h-[400px]"
               style={{
                 background: `url(${listing.imgUrls[index]}) center no-repeat`,
                 backgroundSize: "cover",
@@ -146,7 +147,26 @@ export default function Listing() {
             <Contact userRef={listing.userRef} listing={listing}></Contact>
           )}
         </div>
-        <div className="bg-blue-300  w-full z-10 overflow-x-hidden"></div>
+        <div className="bg-blue-300 h-[300px] lg:h-[300px] :mt-2 w-full z-10 overflow-x-hidden md:ml-0 ">
+          <MapContainer
+            center={[listing.geolocation.lat, listing.geolocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={[listing.geolocation.lat, listing.geolocation.lng]}
+            >
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
       </div>
     </main>
   );
