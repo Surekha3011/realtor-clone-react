@@ -91,26 +91,8 @@ export default function CreateListing() {
     /* API*/
     let geolocation = {};
     let location;
-    if (geolocationEnabled) {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
-      );
-      const data = await response.json();
-      console.log(data);
-      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
-      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
-
-      location = data.status === "ZERO_RESULTS" && undefined;
-
-      if (location === undefined) {
-        setLoading(false);
-        toast.error("please enter a correct address");
-        return;
-      }
-    } else {
-      geolocation.lat = latitude;
-      geolocation.lng = longitude;
-    }
+    geolocation.lat = latitude;
+    geolocation.lng = longitude;
 
     async function storeImage(image) {
       return new Promise((resolve, reject) => {
@@ -311,36 +293,38 @@ export default function CreateListing() {
           required
           className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 mb-6"
         />
-        {!geolocationEnabled && (
-          <div className="flex space-x-6 justify-start mb-6">
-            <div className="">
-              <p className="text-lg font-semibold">Latitude</p>
-              <input
-                type="number"
-                id="latitude"
-                value={latitude}
-                onChange={onChange}
-                required
-                min="-90"
-                max="90"
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
-              />
-            </div>
-            <div className="">
-              <p className="text-lg font-semibold">Longitude</p>
-              <input
-                type="number"
-                id="longitude"
-                value={longitude}
-                onChange={onChange}
-                required
-                min="-180"
-                max="180"
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
-              />
-            </div>
+        <div className="flex space-x-6 justify-start mb-6">
+          <div className="">
+            <p className="text-lg font-semibold">Latitude</p>
+            <input
+              type="text"
+              name="lat"
+              autofocus
+              id="latitude"
+              value={latitude}
+              onChange={onChange}
+              required
+              min="-90"
+              max="90"
+              className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
+            />
           </div>
-        )}
+          <div className="">
+            <p className="text-lg font-semibold">Longitude</p>
+            <input
+              type="text"
+              name="long"
+              id="longitude"
+              autofocus
+              value={longitude}
+              onChange={onChange}
+              required
+              min="-180"
+              max="180"
+              className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
+            />
+          </div>
+        </div>
         <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"

@@ -15,7 +15,7 @@ export default function Home() {
   //offers
   const [offerListings, setOfferListings] = useState(null);
   useEffect(() => {
-    async function fetchOffers(e) {
+    async function fetchOffers() {
       try {
         //get reference
         const listingsRef = collection(db, "listings");
@@ -119,6 +119,7 @@ export default function Home() {
                 <ListingItem
                   key={listing.id}
                   listing={listing.data}
+                  id={listing.id}
                 ></ListingItem>
               ))}
             </ul>
@@ -139,6 +140,7 @@ export default function Home() {
                 <ListingItem
                   key={listing.id}
                   listing={listing.data}
+                  id={listing.id}
                 ></ListingItem>
               ))}
             </ul>
@@ -159,6 +161,7 @@ export default function Home() {
                 <ListingItem
                   key={listing.id}
                   listing={listing.data}
+                  id={listing.id}
                 ></ListingItem>
               ))}
             </ul>
